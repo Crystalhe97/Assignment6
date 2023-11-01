@@ -13,8 +13,9 @@ if __name__ == '__main__':
     player = 'O'
     while winner is None:
         player = other_player(player)
-        print("TODO: take a turn!")
+        print("It's " + player + "'s turn!")
         print(board)
-        x, y = input("The coordinate of your move:")
+        x, y = [int(i) for i in input("The coordinate of your move: ").split(",")]
         board[x][y] = player
         winner = get_winner(board)
+    print(winner + " wins the game!")
