@@ -1,21 +1,70 @@
-# This file contains the Command Line Interface (CLI) for
-# the Tic-Tac-Toe game. This is where input and output happens.
-# For core game logic, see logic.py.
+from logic import check_winner
 
-from logic import make_empty_board
+def get_empty_board():
+    return[
+        [None, None, None],
+        [None, None, None],
+        [None, None, None],
+    ]
 
+def print_board(board):
+    for row in board:
+        print(row)   #print will print the variable in a new line
 
-# Reminder to check all the tests
+def get_player_input():
+    """
+    input:
+    row, col
+    return:
+        row: int -> the index of row
+        col: int -> the index of column
+    """
+    #prompt = f"player {current_player}, Please input your move, e.g. row,col/n"
+    prompt = f"player {current_player} > "
+    player_input = input(prompt) #this is a string
+    # "1,1" .split(',') -> ["1","1"]
+    row_col_list = player_input.split(',')   #["1","1"]
+    row, col = [int(x) for x in row_col_list] #[1,1]
+    return row,col
+
+def switch_player(current_player):
+    if current_player == 'X':
+        return 'O'
+    return 'X'
 
 if __name__ == '__main__':
-    board = make_empty_board()
+    current_player = 'X'
+    board = get_empty_board() # get an empty board
     winner = None
-    player = 'O'
+
     while winner is None:
-        player = other_player(player)
-        print("It's " + player + "'s turn!")
-        print(board)
-        x, y = [int(i) for i in input("The coordinate of your move: ").split(",")]
-        board[x][y] = player
-        winner = get_winner(board)
-    print(winner + " wins the game!")
+        print_board(board)# print the board
+        try:
+            row, col = get_player_input() #ask user input
+        except ValueError:
+            print("Invalid imput, try again")
+            continue
+        
+        if row >= len(board[0]) or col >= len(board):
+            print(f"out of bounds, try again\n")
+            continue
+
+        if board[row][col]:
+            print(
+                f"{row},{col} already has mark {board[row][col]}, please choose another place\n"
+            )
+            continue
+        
+        #mark the board
+        board[row][col] = current_player
+        winner = check_winner(board) #"O", "X" -> break out the loop
+
+
+        current_player = switch_player(current_player)
+        #current_player = "X" if current_player == "O" else "O"
+    print_board(board)
+    print(f"Winner is {current_player}")
+    
+    # check for winner
+    # check if game is draw
+    # print the winner

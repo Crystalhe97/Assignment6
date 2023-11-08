@@ -1,31 +1,73 @@
-# This file is where game logic lives. No input
-# or output happens here. The logic in this file
-# should be unit-testable.
+def check_winner(board):
+    # check rows
+    #    ['X', 'X', 'X'], -> set(['X', 'X', 'X']) -> {'X'}
+    #    ['O', 'X', 'O'], -> set(['O', 'X', 'O']) -> {'X', 'O'}
+    #    ['O', 'O', 'X'],
+    for row in board:
+        if len(set(row)) == 1:
+            return row[0]
 
-
-def make_empty_board():
-    return [
-        [None, None, None],
-        [None, None, None],
-        [None, None, None],
-    ]
-
-
-def get_winner(board):
-    """Determines the winner of the given board.
-    Returns 'X', 'O', or None."""
-    for i in range(3):
-        if board[i][0] == board[i][1] == board[i][2] and board[i][0]:
-            return board[i][0]
-        elif board[0][i] == board[1][i] == board[2][i] and board[0][i]:
+    # check columns
+    #    ['X', 'X', 'X'],
+    #    ['O', 'X', 'O'],
+    #    ['O', 'O', 'X'],
+    # how to index -> board[row][column]
+    # column_idxs = [[0,0], [1,0], [2,0]]
+    # column_idxs = [[0,1], [1,1], [2,1]]
+    for i in range(len(board)):
+        # len(board) -> 3
+        column = [board[j][i] for j in range(len(board))]
+        # column => ['X', 'O', 'O']
+        # column => ['X', 'X', 'O]
+        if len(set(column)) == 1:
             return board[0][i]
-    if board[0][0] == board[1][1] == board[2][2] and board[0][0]:
+
+    # check diagonals
+    # check columns
+    #    ['X', 'X', 'X'],
+    #    ['O', 'X', 'O'],
+    #    ['O', 'O', 'X'],
+    # how to index -> board[row][column]
+    # idx -> [[0,0], [1,1], [2, 2]]
+    top_left_to_bottom_right = [board[i][i] for i in range(len(board))]
+    if len(set(top_left_to_bottom_right)) == 1:
         return board[0][0]
-    elif board[0][2] == board[1][1] == board[2][0] and board[0][2]:
-        return board[0][2]
-    return None
 
+    # check diagonals
+    # check columns
+    #    ['X', 'X', 'X'],
+    #    ['O', 'X', 'O'],
+    #    ['O', 'O', 'X'],
+    # how to index -> board[row][column]
+    # idx -> [[0,2], [1,1], [2, 0]]
+    top_right_to_bottom_left = [board[i][len(board)-i-1] for i in range(len(board))]
+    if len(set(top_right_to_bottom_left)) == 1:
+        return board[0][len(board)-1]
 
-def other_player(player):
-    """Given the character for a player, returns the other player."""
-    return "O" if player == "X" else "X"
+    # Check draw
+    """
+    board = [
+        ['O', None, None],
+        [None, None, None],
+        [None, 'X'', None],
+    ]
+    # if no None in the board, return draw
+    """
+    #[2,2].append([1,1]) -> [2,2 [1,1]]
+    #[2,2].extend([1,1]) -> [2,2,1,1]
+    #flat_board = ["O", "X", "O", "O", "X", "O", "O", "X", "O",]
+    flat_board = []
+    for row in board:
+        flat_board.extend(row)
+    if not None in flat_board:
+    
+    #game still in play
+        return "draw"
+
+if __name__ == "__main__":
+    board = [
+        ['X', 'X', 'O'],
+        ['O', 'O', 'X'],
+        ['X', 'X', 'O'],
+    ]
+    print(check_winner(board))
